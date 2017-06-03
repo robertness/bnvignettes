@@ -1,0 +1,86 @@
+---
+title: "Evaluating Structure Learning"
+author: "Robert Ness"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+The following example works with the [ALARM](http://www.bnlearn.com/bnrepository/#alarm) network.  This is used as a reference network against which learning results will be compared.
+
+The first step is to build the reference network.
+
+```{r alarm, message=FALSE}
+library(bnlearn)
+alarm_model_string <- paste0("[HIST|LVF][CVP|LVV][PCWP|LVV][HYP][LVV|HYP:LVF]",
+  "[LVF][STKV|HYP:LVF][ERLO][HRBP|ERLO:HR][HREK|ERCA:HR][ERCA]",
+  "[HRSA|ERCA:HR][ANES][APL][TPR|APL][ECO2|ACO2:VLNG][KINK]",
+  "[MINV|INT:VLNG][FIO2][PVS|FIO2:VALV][SAO2|PVS:SHNT][PAP|PMB][PMB]",
+  "[SHNT|INT:PMB][INT][PRSS|INT:KINK:VTUB][DISC][MVS][VMCH|MVS]",
+  "[VTUB|DISC:VMCH][VLNG|INT:KINK:VTUB][VALV|INT:VLNG][ACO2|VALV]",
+  "[CCHL|ACO2:ANES:SAO2:TPR][HR|CCHL][CO|HR:STKV][BP|CO:TPR]") 
+alarm_net <- empty.graph(names(alarm)) 
+modelstring(alarm_net) <- alarm_model_string
+graphviz.plot(alarm_net, main = "ALARM Network")
+```
+
+## Visualizing structure learning performance with ROC curves
+
+The following demonstrates how to use bnlearn with ROC curve generation in the ROCR package.
+
+The bn.strength S3 class structure is a data frame where each row corresponds to an arc, the "strength" column represents the probability a given arc is present, and the "direction" column represents the probability of the arc's direction given it is present.
+
+```{r, warning=FALSE}
+strength <- boot.strength(alarm, R = 200, m = 30, algorithm = "hc")
+class(strength)
+head(strength, 10)
+```
+
+One way of evaluating the overall performance of a network structure learning algorithm is evaluate how well it detects the presence of individual arcs.  This approach takes each pair of nodes in a ground truth network and labels them with a 1 if an arc exists between them and 0 if not.  
+
+The ```strength.prediction``` function treats the probabilities in a bn.strength object as predictions of these labels.  
+
+```{r probabilities}
+sp <- strength.performance(strength, alarm_net)
+head(sp)
+```
+
+The "pred" and "label" columns can be passed to the ```prediction``` and ```performance``` functions in ROCR.  
+
+```{r ROCR, message=FALSE}
+library(ROCR)
+pred <- prediction(sp$pred, sp$label)
+perf <- performance(pred, "tpr", "fpr")
+plot(perf, main = "Arc Detection")
+```
+
+The function also works well with the piping approach to analytic workflows with tidyverse's dplyr.
+
+```{r tidyverse, warning=FALSE, message=FALSE}
+library(tidyverse)
+strength %>%
+  strength.performance(alarm_net) %>%
+  {prediction(.$pred, .$label)} %>%
+  performance("tpr", "fpr") %>%
+  plot(main = "Arc Detection")
+```
+
+### Considering Edge Direction
+
+Set the "consider_direction" argument to TRUE (the default value used above) when the goal is to evaluate performance in the detection of edge presence *and* direction.  The prediction value is calculated as the product of the strength and direction columns, i.e. the joint probability of an arc's presence and direction.  
+In contrast when consider_direction is set to FALSE, ```strength.performance``` uses the strength of an arc as the prediction value.  Note that in this case, the number of rows in the output data frame will be halved, since direction is not considered.
+
+```{r direction}
+sp2 <- strength.performance(strength, alarm_net, consider_direction = FALSE)
+head(sp2)
+```
+
+
+```{r}
+pred2 <- prediction(sp2$pred, sp2$label)
+perf2 <- performance(pred2, "tpr", "fpr")
+plot(perf2, main = "Arc Detection")
+```

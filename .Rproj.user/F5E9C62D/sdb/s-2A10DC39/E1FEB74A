@@ -1,0 +1,20 @@
+{
+    "collab_server" : "",
+    "contents" : "Package: bnvignettes\nType: Package\nTitle: Vignettes for the bnlearn package\nVersion: 0.1.0\nAuthor: Robert Ness\nMaintainer: Robert Ness <robertness@gmail.com>\nDescription: Vignettes for various graphical modeling workflows using the bnlearn package.\nLicense: GPL\nEncoding: UTF-8\nLazyData: true\nSuggests: knitr,\n    rmarkdown,\n    bnlearn,\n    tidyverse\nVignetteBuilder: knitr\n",
+    "created" : 1496503539620.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "2216575278",
+    "id" : "E1FEB74A",
+    "lastKnownWriteTime" : 1496503649,
+    "last_content_update" : 1496503649060,
+    "path" : "~/Dropbox/code/bnvignettes/DESCRIPTION",
+    "project_path" : "DESCRIPTION",
+    "properties" : {
+    },
+    "relative_order" : 3,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "dcf"
+}

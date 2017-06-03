@@ -1,0 +1,15 @@
+Package: bnvignettes
+Type: Package
+Title: Vignettes for the bnlearn package
+Version: 0.1.0
+Author: Robert Ness
+Maintainer: Robert Ness <robertness@gmail.com>
+Description: Vignettes for various graphical modeling workflows using the bnlearn package.
+License: GPL
+Encoding: UTF-8
+LazyData: true
+Suggests: knitr,
+    rmarkdown,
+    bnlearn,
+    tidyverse
+VignetteBuilder: knitr

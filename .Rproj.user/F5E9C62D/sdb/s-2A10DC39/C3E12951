@@ -1,0 +1,20 @@
+{
+    "collab_server" : "",
+    "contents" : "# bnvignettes\n\nThe goal of bnvignettes is to provide some examples of common graphical modeling workflows using the package bnlearn.  \n\n",
+    "created" : 1496503925610.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "3042025397",
+    "id" : "C3E12951",
+    "lastKnownWriteTime" : 1496504013,
+    "last_content_update" : 1496504013908,
+    "path" : "~/Dropbox/code/bnvignettes/README.md",
+    "project_path" : "README.md",
+    "properties" : {
+    },
+    "relative_order" : 4,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "markdown"
+}
