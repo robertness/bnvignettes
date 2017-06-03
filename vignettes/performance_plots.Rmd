@@ -68,19 +68,5 @@ strength %>%
   plot(main = "Arc Detection")
 ```
 
-### Considering Edge Direction
+```strength.performance``` uses the strength of an arc as the prediction value.  Note that the number of rows in the output data frame will be half of that of the strength argument, since direction is not considered.
 
-Set the "consider_direction" argument to TRUE (the default value used above) when the goal is to evaluate performance in the detection of edge presence *and* direction.  The prediction value is calculated as the product of the strength and direction columns, i.e. the joint probability of an arc's presence and direction.  
-In contrast when consider_direction is set to FALSE, ```strength.performance``` uses the strength of an arc as the prediction value.  Note that in this case, the number of rows in the output data frame will be halved, since direction is not considered.
-
-```{r direction}
-sp2 <- strength.performance(strength, alarm_net, consider_direction = FALSE)
-head(sp2)
-```
-
-
-```{r}
-pred2 <- prediction(sp2$pred, sp2$label)
-perf2 <- performance(pred2, "tpr", "fpr")
-plot(perf2, main = "Arc Detection")
-```
